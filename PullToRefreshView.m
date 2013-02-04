@@ -33,6 +33,8 @@
 #import "PullToRefreshView.h"
 
 #define TEXT_COLOR	 [UIColor colorWithRed:(87.0/255.0) green:(108.0/255.0) blue:(137.0/255.0) alpha:1.0]
+#define TEXT_COLOR [UIColor colorWithRed:77/255.0 green:81/255.0 blue:88/255.0 alpha:1.0]
+#define BACKGROUND_COLOR [UIColor whiteColor]
 #define FLIP_ANIMATION_DURATION 0.18f
 
 
@@ -68,7 +70,7 @@
         [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:NULL];
         
 		self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-		self.backgroundColor = [UIColor colorWithRed:226.0/255.0 green:231.0/255.0 blue:237.0/255.0 alpha:1.0];
+        self.backgroundColor = BACKGROUND_COLOR;
         
 		lastUpdatedLabel = [[UILabel alloc] initWithFrame:CGRectMake(15.0f, frame.size.height - 30.0f, 256.0f, 20.0f)];
         if (self.useAutoresizingMask) {
