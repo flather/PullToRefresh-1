@@ -32,7 +32,6 @@
 
 #import "PullToRefreshView.h"
 
-#define TEXT_COLOR	 [UIColor colorWithRed:(87.0/255.0) green:(108.0/255.0) blue:(137.0/255.0) alpha:1.0]
 #define TEXT_COLOR [UIColor colorWithRed:77/255.0 green:81/255.0 blue:88/255.0 alpha:1.0]
 #define BACKGROUND_COLOR [UIColor whiteColor]
 #define FLIP_ANIMATION_DURATION 0.18f
@@ -63,7 +62,7 @@
 }
 
 - (id)initWithScrollView:(UIScrollView *)scroll {
-    CGRect frame = CGRectMake(0.0f, 0.0f - scroll.bounds.size.height, scroll.bounds.size.width, scroll.bounds.size.height);
+    CGRect frame = CGRectMake(0.0f, 0.0f - scroll.frame.size.height, scroll.frame.size.width, scroll.frame.size.height);
     
     if ((self = [super initWithFrame:frame])) {
         scrollView = scroll;
