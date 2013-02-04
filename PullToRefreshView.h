@@ -53,6 +53,7 @@ typedef enum {
 @property (nonatomic, weak) id<PullToRefreshViewDelegate> delegate;
 @property (nonatomic, assign, getter = isEnabled) BOOL enabled;
 @property (nonatomic, assign) BOOL useAutoresizingMask;
+@property (nonatomic, assign) BOOL playSounds;
 
 - (void)refreshLastUpdatedDate;
 - (void)finishedLoading;

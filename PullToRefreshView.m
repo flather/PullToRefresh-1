@@ -190,7 +190,9 @@
                 }
             } else if (state == PullToRefreshViewStateNormal) {
                 if (scrollView.contentOffset.y < -65.0f) {
-                    [self playSound:@"psst1" withExt:@"wav"];
+                    if (self.playSounds) {
+                        [self playSound:@"psst1" withExt:@"wav"];
+                    }
                     [self setState:PullToRefreshViewStateReady];
                 }
             } else if (state == PullToRefreshViewStateLoading) {
@@ -217,7 +219,9 @@
 
 - (void)finishedLoading {
     if (state == PullToRefreshViewStateLoading) {
-        [self playSound:@"pop" withExt:@"wav"];
+        if (self.playSounds) {
+            [self playSound:@"pop" withExt:@"wav"];
+        }
         [UIView animateWithDuration:0.3f animations:^{
             [self setState:PullToRefreshViewStateNormal];
         }];
