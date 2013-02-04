@@ -31,6 +31,7 @@
 
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
+#import <AudioToolbox/AudioToolbox.h>
 
 typedef enum {
   PullToRefreshViewStateNormal = 0,
