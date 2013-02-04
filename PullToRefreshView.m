@@ -70,8 +70,10 @@
 		self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		self.backgroundColor = [UIColor colorWithRed:226.0/255.0 green:231.0/255.0 blue:237.0/255.0 alpha:1.0];
         
-		lastUpdatedLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, frame.size.height - 30.0f, self.frame.size.width, 20.0f)];
-		lastUpdatedLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+		lastUpdatedLabel = [[UILabel alloc] initWithFrame:CGRectMake(15.0f, frame.size.height - 30.0f, 256.0f, 20.0f)];
+        if (self.useAutoresizingMask) {
+            lastUpdatedLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        }
 		lastUpdatedLabel.font = [UIFont systemFontOfSize:12.0f];
 		lastUpdatedLabel.textColor = TEXT_COLOR;
 		lastUpdatedLabel.shadowColor = [UIColor colorWithWhite:0.9f alpha:1.0f];
@@ -80,8 +82,10 @@
 		lastUpdatedLabel.textAlignment = UITextAlignmentCenter;
 		[self addSubview:lastUpdatedLabel];
         
-		statusLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, frame.size.height - 48.0f, self.frame.size.width, 20.0f)];
-		statusLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+		statusLabel = [[UILabel alloc] initWithFrame:CGRectMake(15.0f, frame.size.height - 48.0f, 256.0f, 20.0f)];
+        if (self.useAutoresizingMask) {
+            statusLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        }
 		statusLabel.font = [UIFont boldSystemFontOfSize:13.0f];
 		statusLabel.textColor = TEXT_COLOR;
 		statusLabel.shadowColor = [UIColor colorWithWhite:0.9f alpha:1.0f];

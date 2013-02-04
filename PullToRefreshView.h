@@ -52,6 +52,7 @@ typedef enum {
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, weak) id<PullToRefreshViewDelegate> delegate;
 @property (nonatomic, assign, getter = isEnabled) BOOL enabled;
+@property (nonatomic, assign) BOOL useAutoresizingMask;
 
 - (void)refreshLastUpdatedDate;
 - (void)finishedLoading;
