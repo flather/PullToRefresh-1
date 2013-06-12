@@ -46,11 +46,16 @@ typedef enum {
     
 	UILabel *lastUpdatedLabel;
 	UILabel *statusLabel;
+    UILabel *progressLabel;
 	CALayer *arrowImage;
 	UIActivityIndicatorView *activityView;
+    UIProgressView *progressView;
 }
 
 @property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) NSNumber* totalUpdates;
+@property (nonatomic, strong) NSNumber* updatesCounted;
+@property (nonatomic, strong) NSNumber* updatesCountedPerEntityType;
 @property (nonatomic, weak) id<PullToRefreshViewDelegate> delegate;
 @property (nonatomic, assign, getter = isEnabled) BOOL enabled;
 @property (nonatomic, assign) BOOL useAutoresizingMask;

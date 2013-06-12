@@ -31,6 +31,7 @@
 //
 
 #import "PullToRefreshView.h"
+#import "DMSImporter.h"
 
 #define TEXT_COLOR [UIColor colorWithRed:77/255.0 green:81/255.0 blue:88/255.0 alpha:1.0]
 #define BACKGROUND_COLOR [UIColor whiteColor]
@@ -108,12 +109,28 @@
         
 		[self.layer addSublayer:arrowImage];
         
+        progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
+        [progressView setTrackTintColor:[AppConfiguration groupedBackColor]];
+        [progressView setProgressTintColor:[AppConfiguration mainTintColor]];
+        progressView.progress = 0.0f;
+        progressView.frame = CGRectMake(52.0f, frame.size.height - 25.0f, 180.0f, 20.0f);
+        progressView.hidden = YES;
+        [self addSubview:progressView];
+        self.updatesCounted = 0;
+        
         activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
 		activityView.frame = CGRectMake(10.0f, frame.size.height - 38.0f, 20.0f, 20.0f);
 		[self addSubview:activityView];
 		
         self.enabled = YES;
 		[self setState:PullToRefreshViewStateNormal];
+        
+        // observe keyboard for note taking feature
+        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+        [center addObserver:self selector:@selector(updateProgress:) name:DMSUpdateProgressNotification object:nil];
+        [center addObserver:self selector:@selector(resetProgress:) name:DMSImportEndedNotification object:nil];
+        [center addObserver:self selector:@selector(totalUpdates:) name:DMSTotalNumOfImportsNotification object:nil];
+
     }
     
     return self;
@@ -133,6 +150,41 @@
 	 ^{
 		 self.alpha = enabled ? 1 : 0;
 	 }];
+}
+
+- (void) updateProgress: (NSNotification*) notification
+{
+    NSNumber* totalUpdates = [NSNumber numberWithInt:[[(NSDictionary*)[notification userInfo] objectForKey:@"allImports"] intValue]];
+    NSNumber* numOfUpdates = [NSNumber numberWithInt:[[(NSDictionary*)[notification userInfo] objectForKey:@"newImports"] intValue]];
+    self.updatesCountedPerEntityType = numOfUpdates;
+    if (self.totalUpdates > 0) {
+        // add counted updates to current update for overall progress
+        numOfUpdates = [NSNumber numberWithFloat:[numOfUpdates floatValue] + [self.updatesCounted floatValue]];
+        totalUpdates = self.totalUpdates;
+    }
+    [lastUpdatedLabel setHidden:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [progressView setProgress:([numOfUpdates floatValue]/[totalUpdates floatValue]) animated:NO];
+        statusLabel.text = [NSString stringWithFormat:@"Loading... %@", [NSString stringWithFormat:@"%.0f%%", ([numOfUpdates floatValue]/[totalUpdates floatValue])*100]];
+    });
+}
+
+- (void) resetProgress: (NSNotification*) notification
+{
+    if (self.totalUpdates.intValue > 0) {
+        self.updatesCounted = [NSNumber numberWithFloat:[self.updatesCountedPerEntityType floatValue] + [self.updatesCounted floatValue]];
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [progressView setProgress:0.0 animated:NO];
+        });
+        self.updatesCounted = 0;
+    }
+}
+
+- (void) totalUpdates: (NSNotification*) notification
+{
+    NSNumber* totalUpdates = [NSNumber numberWithInt:[[(NSDictionary*)[notification userInfo] objectForKey:@"totalUpdates"] intValue]];
+    self.totalUpdates = totalUpdates;
 }
 
 - (void)refreshLastUpdatedDate {
@@ -165,6 +217,8 @@
             [self setImageFlipped:NO];
 			[self refreshLastUpdatedDate];
             scrollView.contentInset = UIEdgeInsetsZero;
+            lastUpdatedLabel.hidden = NO;
+            progressView.hidden = YES;
 			break;
             
 		case PullToRefreshViewStateLoading:
@@ -172,6 +226,8 @@
 			[self showActivity:YES animated:YES];
             [self setImageFlipped:NO];
             scrollView.contentInset = UIEdgeInsetsMake(60.0f, 0.0f, 0.0f, 0.0f);
+            lastUpdatedLabel.hidden = YES;
+            progressView.hidden = NO;
 			break;
             
 		default:
