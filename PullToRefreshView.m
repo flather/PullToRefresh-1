@@ -165,7 +165,6 @@
     [lastUpdatedLabel setHidden:YES];
     dispatch_async(dispatch_get_main_queue(), ^{
         [progressView setProgress:([numOfUpdates floatValue]/[totalUpdates floatValue]) animated:NO];
-        statusLabel.text = [NSString stringWithFormat:@"Loading... %@", [NSString stringWithFormat:@"%.0f%%", ([numOfUpdates floatValue]/[totalUpdates floatValue])*100]];
     });
 }
 
