@@ -81,7 +81,7 @@
 		lastUpdatedLabel.shadowColor = [UIColor colorWithWhite:0.9f alpha:1.0f];
 		lastUpdatedLabel.shadowOffset = CGSizeMake(0.0f, 1.0f);
 		lastUpdatedLabel.backgroundColor = [UIColor clearColor];
-		lastUpdatedLabel.textAlignment = UITextAlignmentCenter;
+		lastUpdatedLabel.textAlignment = NSTextAlignmentCenter;
 		[self addSubview:lastUpdatedLabel];
         
 		statusLabel = [[UILabel alloc] initWithFrame:CGRectMake(15.0f, frame.size.height - 48.0f, 256.0f, 20.0f)];
@@ -93,7 +93,7 @@
 		statusLabel.shadowColor = [UIColor colorWithWhite:0.9f alpha:1.0f];
 		statusLabel.shadowOffset = CGSizeMake(0.0f, 1.0f);
 		statusLabel.backgroundColor = [UIColor clearColor];
-		statusLabel.textAlignment = UITextAlignmentCenter;
+		statusLabel.textAlignment = NSTextAlignmentCenter;
 		[self addSubview:statusLabel];
         
 		arrowImage = [[CALayer alloc] init];
@@ -117,6 +117,7 @@
         progressView.hidden = YES;
         [self addSubview:progressView];
         self.updatesCounted = 0;
+        self.totalUpdates = 0;
         
         activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
 		activityView.frame = CGRectMake(10.0f, frame.size.height - 38.0f, 20.0f, 20.0f);
@@ -128,7 +129,7 @@
         // observe keyboard for note taking feature
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
         [center addObserver:self selector:@selector(updateProgress:) name:DMSUpdateProgressNotification object:nil];
-        [center addObserver:self selector:@selector(resetProgress:) name:DMSImportEndedNotification object:nil];
+        [center addObserver:self selector:@selector(resetProgress:) name:DMSImportAndLinkingEndedNotification object:nil];
         [center addObserver:self selector:@selector(totalUpdates:) name:DMSTotalNumOfImportsNotification object:nil];
 
     }
@@ -156,28 +157,27 @@
 {
     NSNumber* totalUpdates = [NSNumber numberWithInt:[[(NSDictionary*)[notification userInfo] objectForKey:@"allImports"] intValue]];
     NSNumber* numOfUpdates = [NSNumber numberWithInt:[[(NSDictionary*)[notification userInfo] objectForKey:@"newImports"] intValue]];
-    self.updatesCountedPerEntityType = numOfUpdates;
-    if (self.totalUpdates > 0) {
-        // add counted updates to current update for overall progress
-        numOfUpdates = [NSNumber numberWithFloat:[numOfUpdates floatValue] + [self.updatesCounted floatValue]];
-        totalUpdates = self.totalUpdates;
-    }
+
+    self.totalUpdates = [NSNumber numberWithInt:self.totalUpdates.intValue + totalUpdates.intValue];
+    self.updatesCounted = [NSNumber numberWithInt:[numOfUpdates intValue] + [self.updatesCounted intValue]];
+    
+    totalUpdates = self.totalUpdates;
+    numOfUpdates = self.updatesCounted;
+    
     [lastUpdatedLabel setHidden:YES];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [progressView setProgress:([numOfUpdates floatValue]/[totalUpdates floatValue]) animated:NO];
+        NSLog(@"------------------------------------------------------------------------------------------- PROGRESS: %@ / %@ = %f", numOfUpdates, totalUpdates, numOfUpdates.floatValue/totalUpdates.floatValue);
+        [progressView setProgress:(numOfUpdates.floatValue/totalUpdates.floatValue) animated:YES];
     });
 }
 
 - (void) resetProgress: (NSNotification*) notification
 {
-    if (self.totalUpdates.intValue > 0) {
-        self.updatesCounted = [NSNumber numberWithFloat:[self.updatesCountedPerEntityType floatValue] + [self.updatesCounted floatValue]];
-    } else {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [progressView setProgress:0.0 animated:NO];
-        });
-        self.updatesCounted = 0;
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [progressView setProgress:0.0 animated:NO];
+    });
+    self.updatesCounted = 0;
+    self.totalUpdates = 0;
 }
 
 - (void) totalUpdates: (NSNotification*) notification
@@ -187,16 +187,16 @@
 }
 
 - (void)refreshLastUpdatedDate {
-    NSDate *date = [NSDate date];
-    
-	if ([delegate respondsToSelector:@selector(pullToRefreshViewLastUpdated:)])
-		date = [delegate pullToRefreshViewLastUpdated:self];
-    
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setLocale:[NSLocale currentLocale]];
-    [formatter setDateStyle:NSDateFormatterMediumStyle];
-    [formatter setTimeStyle:NSDateFormatterMediumStyle];
-    lastUpdatedLabel.text = [NSString stringWithFormat:@"Last Updated: %@", [formatter stringFromDate:date]];
+//    NSDate *date = [NSDate date];
+//    
+//	if ([delegate respondsToSelector:@selector(pullToRefreshViewLastUpdated:)])
+//		date = [delegate pullToRefreshViewLastUpdated:self];
+//    
+//    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//    [formatter setLocale:[NSLocale currentLocale]];
+//    [formatter setDateStyle:NSDateFormatterMediumStyle];
+//    [formatter setTimeStyle:NSDateFormatterMediumStyle];
+//    lastUpdatedLabel.text = [NSString stringWithFormat:@"Last Updated: %@", [formatter stringFromDate:date]];
 }
 
 - (void)setState:(PullToRefreshViewState)state_ {
