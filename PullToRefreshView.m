@@ -155,20 +155,23 @@
 
 - (void) updateProgress: (NSNotification*) notification
 {
-    NSNumber* totalUpdates = [NSNumber numberWithInt:[[(NSDictionary*)[notification userInfo] objectForKey:@"allImports"] intValue]];
+//    NSNumber* totalUpdates = [NSNumber numberWithInt:[[(NSDictionary*)[notification userInfo] objectForKey:@"allImports"] intValue]];
+    NSNumber* totalUpdates = nil;
     NSNumber* numOfUpdates = [NSNumber numberWithInt:[[(NSDictionary*)[notification userInfo] objectForKey:@"newImports"] intValue]];
 
-    self.totalUpdates = [NSNumber numberWithInt:self.totalUpdates.intValue + totalUpdates.intValue];
+//    self.totalUpdates = [NSNumber numberWithInt:self.totalUpdates.intValue + totalUpdates.intValue];
     self.updatesCounted = [NSNumber numberWithInt:[numOfUpdates intValue] + [self.updatesCounted intValue]];
     
     totalUpdates = self.totalUpdates;
     numOfUpdates = self.updatesCounted;
     
     [lastUpdatedLabel setHidden:YES];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSLog(@"------------------------------------------------------------------------------------------- PROGRESS: %@ / %@ = %f", numOfUpdates, totalUpdates, numOfUpdates.floatValue/totalUpdates.floatValue);
-        [progressView setProgress:(numOfUpdates.floatValue/totalUpdates.floatValue) animated:YES];
-    });
+    if (self.totalUpdates > 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"------------------------------------------------------------------------------------------- PROGRESS: %@ / %@ = %f", numOfUpdates, totalUpdates, numOfUpdates.floatValue/totalUpdates.floatValue);
+            [progressView setProgress:(numOfUpdates.floatValue/totalUpdates.floatValue) animated:YES];
+        });
+    }
 }
 
 - (void) resetProgress: (NSNotification*) notification
@@ -184,6 +187,7 @@
 {
     NSNumber* totalUpdates = [NSNumber numberWithInt:[[(NSDictionary*)[notification userInfo] objectForKey:@"totalUpdates"] intValue]];
     self.totalUpdates = totalUpdates;
+    NSLog(@"total Updates found: %@", self.totalUpdates);
 }
 
 - (void)refreshLastUpdatedDate {
