@@ -168,7 +168,6 @@
     [lastUpdatedLabel setHidden:YES];
     if (self.totalUpdates > 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSLog(@"------------------------------------------------------------------------------------------- PROGRESS: %@ / %@ = %f", numOfUpdates, totalUpdates, numOfUpdates.floatValue/totalUpdates.floatValue);
             [progressView setProgress:(numOfUpdates.floatValue/totalUpdates.floatValue) animated:YES];
         });
     }
@@ -208,14 +207,14 @@
     
 	switch (state) {
 		case PullToRefreshViewStateReady:
-			statusLabel.text = @"Release to refresh...";
+			statusLabel.text = NSLocalizedString(@"Release to refresh...", @"Release description");
 			[self showActivity:NO animated:NO];
             [self setImageFlipped:YES];
             scrollView.contentInset = UIEdgeInsetsZero;
 			break;
             
 		case PullToRefreshViewStateNormal:
-			statusLabel.text = @"Pull down to refresh...";
+			statusLabel.text = NSLocalizedString(@"Pull down to refresh...", @"Pull down description");
 			[self showActivity:NO animated:NO];
             [self setImageFlipped:NO];
 			[self refreshLastUpdatedDate];
@@ -225,7 +224,7 @@
 			break;
             
 		case PullToRefreshViewStateLoading:
-			statusLabel.text = @"Loading...";
+			statusLabel.text = NSLocalizedString(@"Loading...", @"Title for Loading");
 			[self showActivity:YES animated:YES];
             [self setImageFlipped:NO];
             scrollView.contentInset = UIEdgeInsetsMake(60.0f, 0.0f, 0.0f, 0.0f);
