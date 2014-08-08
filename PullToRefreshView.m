@@ -127,10 +127,10 @@
 		[self setState:PullToRefreshViewStateNormal];
         
         // observe keyboard for note taking feature
-        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-        [center addObserver:self selector:@selector(updateProgress:) name:DMSUpdateProgressNotification object:nil];
-        [center addObserver:self selector:@selector(resetProgress:) name:DMSImportAndLinkingEndedNotification object:nil];
-        [center addObserver:self selector:@selector(totalUpdates:) name:DMSTotalNumOfImportsNotification object:nil];
+//        NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+//        [center addObserver:self selector:@selector(updateProgress:) name:DMSUpdateProgressNotification object:nil];
+//        [center addObserver:self selector:@selector(resetProgress:) name:DMSImportAndLinkingEndedNotification object:nil];
+//        [center addObserver:self selector:@selector(totalUpdates:) name:DMSTotalNumOfImportsNotification object:nil];
 
     }
     
